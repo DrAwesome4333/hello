@@ -1,0 +1,121 @@
+<html>
+<head>
+	<title id="title">Curves</title>
+	<link rel="shortcut icon" href="https://googledrive.com/host/0B-1c7Q5hwguvRGlMMTNVWElMc2c/"/>
+	<style>
+	canvas{
+		position:absolute;
+		top:0px;
+		left:0px;
+	}
+	</style>
+</head>
+<body>
+    <h1 id="tst"></h1>
+<script>
+var canvas=document.createElement("Canvas");
+var width=500;
+var height=500;
+canvas.width=width*2;
+canvas.height=height;
+var ct=canvas.getContext("2d")
+document.body.appendChild(canvas)
+var nocps=Math.round(Math.random()*48)+2
+
+var cps=[]//[0,200,100,50,125,150,175,100,150,200]
+
+var colors=["green","blue","yellow","orange","purple","cyan","Grey","brown","pink","black"]
+for(var a=0;a<nocps;a++){
+	cps.push(Math.random()*500,Math.random()*500)
+	colors.push("rgb("+Math.round(Math.random()*255)+","+Math.round(Math.random()*255)+","+Math.round(Math.random()*255)+")")
+}
+var t=0;
+var lines=cps.length/2-1;
+var eC=0;
+var lineData=[];
+function anotherLine(){
+    
+}
+function update(){
+   
+    window.requestAnimationFrame(update)
+    ct.fillStyle="white"
+    ct.fillRect(0,0,width*2,height)
+    ct.beginPath()
+    ct.moveTo(cps[0],cps[1])
+    for(var a=0;a<cps.length;a+=2){
+        ct.lineTo(cps[a],cps[a+1])
+    }
+    ct.strokeStyle="Black"
+    ct.stroke();
+    var linesData=[]
+    var depth=0;
+    for(var a=cps.length/2-1;a>0;a--) {
+        linesData.push([])
+        if(depth===0 && cps.length>=4){
+            for(var b=0;b<cps.length-2;b+=2){
+            linesData[depth].push(cps[b]+((cps[b+2]-cps[b])*(t/100)),cps[b+1]+((cps[b+3]-cps[b+1])*(t/100)));
+        }       
+        }else if(linesData[depth].length||linesData[depth].length===0){
+            for(var b=0;b<linesData[depth-1].length-2;b+=2){
+            linesData[depth].push(linesData[depth-1][b]+((linesData[depth-1][b+2]-linesData[depth-1][b])*(t/100)),linesData[depth-1][b+1]+((linesData[depth-1][b+3]-linesData[depth-1][b+1])*(t/100)));
+        }
+        }
+        if(linesData[depth].length===2){
+            lineData.push(linesData[depth][0],linesData[depth][1]);
+        }
+        
+        depth++;
+    }
+    for(var a=0;a<linesData.length;a++){
+        ct.beginPath();
+        ct.lineWidth=1
+ct.moveTo(linesData[a][0],linesData[a][1])
+ct.fillStyle=colors[a]
+ct.fillRect(linesData[a][0]-2.5,linesData[a][1]-2.5,5,5)
+        for(var b=2;b<linesData[a].length;b+=2){
+            ct.lineTo(linesData[a][b],linesData[a][b+1])
+            ct.fillRect(linesData[a][b]-2.5,linesData[a][b+1]-2.5,5,5)
+        }
+		if(colors[a]){
+        ct.strokeStyle=colors[a]}else{
+			 ct.strokeStyle="Blue"
+		}
+        ct.stroke()
+    }
+    ct.lineWidth=2
+    ct.beginPath();
+    if(lineData.length){
+    ct.moveTo(lineData[0],lineData[1])
+    for(var a=2;a<lineData.length;a+=2){
+        ct.lineTo(lineData[a],lineData[a+1])
+    }
+    ct.strokeStyle="red"//"rgb("+Math.round(Math.random()*255)+","+Math.round(Math.random()*255)+","+Math.round(Math.random()*255)+")"
+    ct.stroke();}
+    
+    ct.beginPath();
+    if(lineData.length){
+    ct.moveTo(lineData[0]+500,lineData[1])
+    for(var a=2;a<lineData.length;a+=2){
+        ct.lineTo(lineData[a]+500,lineData[a+1])
+    }
+	//ct.fillStyle="blue"
+	//ct.fill()
+    ct.strokeStyle="red"//"rgb("+Math.round(Math.random()*255)+","+Math.round(Math.random()*255)+","+Math.round(Math.random()*255)+")"
+    ct.stroke();}
+    ct.fillStyle="Blue"
+	ct.font="75pt timesNewRoman"
+	ct.fillText(nocps,500,450)
+    t+=0.5;
+    if(t>=100){
+        t=0
+        lineData=[];
+    }
+        
+    
+    }
+
+update();
+</script>
+</body>
+</html>
